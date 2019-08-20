@@ -1,0 +1,24 @@
+{
+  "name": "001",
+  "version": "1.0.0",
+  "description": "draw_code.001 — ThreeJS, WebGL & GLSL",
+  "license": "MIT",
+  "author": {
+    "name": "draw_code",
+    "email": "hello@drawcode.info",
+    "url": "https://github.com/drawcode-workshops"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/drawcode-workshops/001.git"
+  },
+  "homepage": "https://github.com/drawcode-workshops/001",
+  "bugs": {
+    "url": "https://github.com/drawcode-workshops/001/issues"
+  }
+}
