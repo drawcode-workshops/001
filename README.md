@@ -2,33 +2,30 @@
 
 This repository includes code & resources for students attending the *ThreeJS, WebGL & GLSL* workshops.
 
-# Digital Book
-
-Most of the information is contained within a digital book that you can browse here:
-
-- [https://drawcode-001.surge.sh/](https://drawcode-001.surge.sh/)
-
 # Contents
 
-- [Tools & Prerequisites](#tools--prerequisites)
+- 📖 [Digital Book](#digital-book)
 
-- [Installing the Prerequisites](#installing-the-prerequisites)
+- 🔧 [Tools & Prerequisites](#tools--prerequisites)
 
-  - [Complete Installation Guide](#complete-installation-guide)
+  - 🎨 [Installing `canvas-sketch` CLI](#installing-canvas-sketch-cli)
 
-- [Installing `canvas-sketch` CLI](#installing-canvas-sketch-cli)
+- ✂️️ [Code Snippets](#code-snippets)
 
-- [Command-Line Tips & Suggestions](#command-line-tips--suggestions)
+- 💻 [Command-Line Tips & Suggestions](#command-line-tips--suggestions)
 
-- [Cloning & Running Examples](#cloning--running-examples)
+- 🔥 [Modules for Creative Coding](#modules)
 
-- [Other Modules for Creative Coding](#other-modules-for-creative-coding)
+- ⚡️ [Cloning & Running Examples](#cloning--running-examples)
 
-- [Cheat Sheet](#cheat-sheet)
+- ✨ [Further Reading](#further-reading)
 
-- [Exercises](#exercises)
+# Digital Book
 
-- [Further Reading](#further-reading)
+You can browse the interactive "slide book" here:
+
+- [https://drawcode-001.surge.sh/](https://drawcode-001.surge.sh/)
+- [ [mirror](https://001--angry-saha-ab0472.netlify.com/) ]
 
 # Tools & Prerequisites
 
@@ -59,7 +56,7 @@ If you haven't installed these yet, you can find more instructions here:
 
 - [Installation Guide](./docs/installation.md)
 
-# Installing `canvas-sketch` CLI
+## Installing `canvas-sketch` CLI
 
 We will be using [`canvas-sketch`](https://github.com/mattdesl/canvas-sketch/) and its command-line interface (CLI) during the workshop.
 
@@ -70,6 +67,12 @@ npm install canvas-sketch-cli --global
 ```
 
 > :bulb: Note the `-cli` suffix in the name; this tells npm to install the CLI tool, not the code library.
+
+# Code Snippets
+
+I've also included a small "recipes" document that you can use as a reference if you are forgetting some of the patterns and recipes discussed during the workshop.
+
+- [Code Snippets](./docs/snippets.md)
 
 # Command-Line Tips & Suggestions
 
@@ -82,12 +85,6 @@ If you are new to the command-line, you can read more details here:
 During the workshop, you won't need to clone and run this repository locally. However, if you wish to do so, you can find more instructions here:
 
 - [Cloning & Running Examples](./docs/cloning.md)
-
-# Snippets
-
-I've also included a small "recipes" document that you can use as a reference if you are forgetting some of the patterns and recipes discussed during the workshop.
-
-- [Snippets](./docs/snippets.md)
 
 # Modules
 
