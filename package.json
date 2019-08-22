@@ -8,10 +8,21 @@
     "email": "hello@drawcode.info",
     "url": "https://github.com/drawcode-workshops"
   },
-  "dependencies": {},
-  "devDependencies": {},
-  "scripts": {
+  "dependencies": {
+    "canvas-sketch": "^0.6.1",
+    "canvas-sketch-util": "^1.8.0",
+    "glsl-noise": "0.0.0",
+    "paper-colors": "^1.0.0",
+    "riso-colors": "^1.0.1",
+    "three": "^0.107.0",
+    "three-geometry-data": "^1.0.1",
+    "three-quaternion-from-normal": "^1.0.0",
+    "three-tube-wireframe": "^1.2.0"
   },
+  "devDependencies": {
+    "canvas-sketch-cli": "^1.10.1"
+  },
+  "scripts": {},
   "keywords": [],
   "repository": {
     "type": "git",
