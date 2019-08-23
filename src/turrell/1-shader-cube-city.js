@@ -8,13 +8,11 @@ const canvasSketch = require('canvas-sketch');
 const Random = require('canvas-sketch-util/random');
 const risoColors = require('riso-colors').map(c => c.hex);
 const paperColors = require('paper-colors').map(c => c.hex);
-const anime = require('animejs');
 
 const settings = {
-  // Make the loop animated
-  animate: true,
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
+  dimensions: [ 2048, 2048 ],
   // Turn on MSAA
   attributes: { antialias: true }
 };
@@ -27,7 +25,8 @@ const sketch = (props) => {
   });
 
   // WebGL background color
-  let background = Random.pick(paperColors);
+  const background = Random.pick(paperColors);
+
   renderer.setClearColor(background, 1);
 
   // Setup a camera
@@ -36,15 +35,23 @@ const sketch = (props) => {
   // Setup your scene
   const scene = new THREE.Scene();
 
-  // Create a new random material
+  // Create a new box
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  geometry.translate(0, 0.5, 0);
+
+  // Choose a random color for all cubes
+  const color = Random.pick(risoColors);
+
+  // A function to create a new shader material with
+  // a random color & gradient
   const createMaterial = () => {
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        time: { value: 0 },
-        power: { value: Random.range(1, 10) },
-        color: { value: new THREE.Color(Random.pick(risoColors)) },
+        power: { value: Random.range(1, 20) },
+        color: { value: new THREE.Color(color) },
         background: { value: new THREE.Color(background) }
       },
+      // Pass coordinate down to fragment shader
       vertexShader: `
         varying vec2 vUv;
         void main () {
@@ -53,24 +60,27 @@ const sketch = (props) => {
           gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.0);
         }
       `,
+      // Receive coordinate and create a gradient
       fragmentShader: `
         varying vec2 vUv;
         uniform vec3 color;
         uniform vec3 background;
         uniform float power;
-        uniform float time;
 
         void main () {
           float d = pow(vUv.y, power * vUv.y);
-          vec3 outColor = mix(background, color , d);
+          vec3 outColor = mix(background, color, d);
           gl_FragColor = vec4(outColor, 1.0);
         }
       `
     });
 
+    // Use a mutli-face material for the 6 sided cube
+    // Top and bottom sides will draw the background color
     const emptyMaterial = new THREE.MeshBasicMaterial({
       color: background
     });
+
     return [
       material,
       material,
@@ -81,79 +91,35 @@ const sketch = (props) => {
     ];
   };
 
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  geometry.translate(0, 0.5, 0);
-
-  const animate = async (mesh) => {
-    const targetScale = mesh.scale.y;
-    const minScale = 0.0001;
-    mesh.scale.y = minScale;
-
-    await anime({
-      targets: mesh.scale,
-      y: targetScale,
-      duration: 1000,
-      easing: 'easeOutExpo'
-    }).finished;
-
-    await anime({
-      targets: mesh.scale,
-      y: 0.0001,
-      duration: 1000,
-      easing: 'easeInExpo'
-    }).finished;
-
-    scene.remove(mesh);
-  };
-
+  // Create a random mesh at the given position
   const createMesh = (position) => {
-    const mesh = new THREE.Mesh(geometry, createMaterial(1000));
+    const mesh = new THREE.Mesh(geometry, createMaterial());
 
-    mesh.position.set(position.x, 0, position.z);
+    // copy the position
+    mesh.position.copy(position);
+
+    // scale it randomly
     mesh.scale.set(
-      Random.gaussian() * Random.gaussian(),
       Math.abs(Random.gaussian() * Random.gaussian()),
-      Random.gaussian() * Random.gaussian()
+      Math.abs(Random.gaussian() * Random.gaussian()),
+      Math.abs(Random.gaussian() * Random.gaussian())
     );
 
+    // Center things a little bit better
+    mesh.position.y += -1;
+
     scene.add(mesh);
-    animate(mesh);
     return mesh;
   };
 
-  const raycaster = new THREE.Raycaster();
-  const ground = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-
-  // Create meshes on movement
-  window.addEventListener('mousemove', ev => {
-    const mouse = new THREE.Vector2(
-      ev.clientX / window.innerWidth * 2 - 1,
-      -ev.clientY / window.innerHeight * 2 + 1
+  for (let i = 0; i < 100; i++) {
+    const position = new THREE.Vector3(
+      Random.gaussian() * Random.gaussian(),
+      0,
+      Random.gaussian() * Random.gaussian()
     );
-    raycaster.setFromCamera(mouse, camera);
-    const target = new THREE.Vector3();
-    const hit = raycaster.ray.intersectPlane(ground, target);
-    if (hit) {
-      // If we hit the ground, create a new mesh
-      createMesh(target);
-    }
-  });
-
-  // Randomize colors
-  window.addEventListener('click', ev => {
-    // Get a new background color
-    background = Random.pick(paperColors);
-    renderer.setClearColor(background, 1);
-
-    // update all meshes with materials
-    scene.traverse(child => {
-      if (child.material) {
-        child.material = createMaterial();
-      }
-    });
-  });
-
-  context.canvas.style.cursor = 'pointer';
+    createMesh(position);
+  }
 
   // draw each frame
   return {

@@ -4,18 +4,15 @@ global.THREE = require('three');
 // Include any additional ThreeJS examples below
 require('three/examples/js/controls/OrbitControls');
 
-const glslify = require('glslify');
 const canvasSketch = require('canvas-sketch');
-const { linspace } = require('canvas-sketch-util/math');
 const Random = require('canvas-sketch-util/random');
 const risoColors = require('riso-colors').map(c => c.hex);
 const paperColors = require('paper-colors').map(c => c.hex);
 
 const settings = {
-  // Make the loop animated
-  animate: true,
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
+  dimensions: [ 2048, 2048 ],
   // Turn on MSAA
   attributes: { antialias: true }
 };
@@ -29,71 +26,84 @@ const sketch = (props) => {
 
   // WebGL background color
   const background = Random.pick(paperColors);
+  const colors = Random.shuffle(risoColors);
+  let colorIndex = 0;
+
   renderer.setClearColor(background, 1);
 
   // Setup a camera
   const camera = new THREE.OrthographicCamera();
-  // Setup camera controller
-  const controls = new THREE.OrbitControls(camera, context.canvas);
 
   // Setup your scene
   const scene = new THREE.Scene();
 
+  // Create a new box
   const geometry = new THREE.BoxGeometry(1, 1, 1);
-  geometry.translate(0, 0.5, 0);
 
-  linspace(40).map(t => {
-    const color = Random.pick(risoColors);
+  // Remove two of the triangles from the geometry (the top faces)
+  geometry.faces.splice(4, 2);
+
+  // A function to create a new shader material with
+  // a random color & gradient
+  const createMaterial = () => {
+    const color = colors[colorIndex++ % colors.length];
+
     const material = new THREE.ShaderMaterial({
+      // Make sure inner side is visible as well
+      side: THREE.DoubleSide,
       uniforms: {
         power: { value: Random.range(1, 20) },
         color: { value: new THREE.Color(color) },
         background: { value: new THREE.Color(background) }
       },
-      side: THREE.DoubleSide,
-      vertexShader: glslify(`
+      // Pass coordinate down to fragment shader
+      vertexShader: `
         varying vec2 vUv;
         void main () {
           vec3 transformed = position.xyz;
           vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.0);
         }
-      `),
-      fragmentShader: glslify(`
+      `,
+      // Receive coordinate and create a gradient
+      fragmentShader: `
         varying vec2 vUv;
         uniform vec3 color;
         uniform vec3 background;
         uniform float power;
-
-        #pragma glslify: dither = require('glsl-dither/8x8')
 
         void main () {
           float d = pow(vUv.y, power * vUv.y);
           vec3 outColor = mix(background, color, d);
           gl_FragColor = vec4(outColor, 1.0);
         }
-      `)
+      `
     });
-    const emptyMaterial = new THREE.MeshBasicMaterial({ color: background });
-    const mesh = new THREE.Mesh(geometry, [
-      material,
-      material,
-      emptyMaterial,
-      emptyMaterial,
-      material,
-      material
-    ]);
-    const [ cx, cz ] = Random.insideCircle(1);
+    return material;
+  };
 
-    mesh.position.set(cx, 0, cz);
+  // When true, the outermost cube will be the background color
+  const masking = false;
 
-    const scale = Math.abs(Random.gaussian() + Random.gaussian()) * 0.25;
-    mesh.scale.x *= scale * Math.abs(Random.gaussian(0, 1));
-    mesh.scale.z *= scale * Math.abs(Random.gaussian(0, 1));
-    mesh.scale.y *= scale * Math.abs(Random.gaussian(0, 1));
-    mesh.position.y += -0.5;
+  // Draw N meshes
+  const maxMeshes = 20;
+  for (let i = 0; i < maxMeshes; i++) {
+    const material = createMaterial();
+    const mesh = new THREE.Mesh(geometry, material);
+    // Value that goes from ~0...1
+    let v = (i + 1) / maxMeshes;
+    // Use pow() to make it exponential, not just linear
+    v = Math.pow(v, 5);
+    // scale each mesh
+    mesh.scale.setScalar(v);
     scene.add(mesh);
-  });
+    if (masking) {
+      mesh.position.y -= 0.5;
+      if (i === maxMeshes - 1) {
+        mesh.material.uniforms.color.value.set(background);
+      }
+    }
+  }
 
   // draw each frame
   return {
@@ -101,11 +111,11 @@ const sketch = (props) => {
     resize ({ pixelRatio, viewportWidth, viewportHeight }) {
       renderer.setPixelRatio(pixelRatio);
       renderer.setSize(viewportWidth, viewportHeight);
-      
+
       const aspect = viewportWidth / viewportHeight;
 
       // Ortho zoom
-      const zoom = 2.0;
+      const zoom = 1;
 
       // Bounds
       camera.left = -zoom * aspect;
@@ -126,12 +136,10 @@ const sketch = (props) => {
     },
     // Update & render your scene here
     render ({ time }) {
-      controls.update();
       renderer.render(scene, camera);
     },
     // Dispose of events & renderer for cleaner hot-reloading
     unload () {
-      controls.dispose();
       renderer.dispose();
     }
   };

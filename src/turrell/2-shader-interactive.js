@@ -9,6 +9,7 @@ const Random = require('canvas-sketch-util/random');
 const risoColors = require('riso-colors').map(c => c.hex);
 const paperColors = require('paper-colors').map(c => c.hex);
 const anime = require('animejs');
+const createInputEvents = require('simple-input-events');
 
 const settings = {
   // Make the loop animated
@@ -36,15 +37,20 @@ const sketch = (props) => {
   // Setup your scene
   const scene = new THREE.Scene();
 
-  // Create a new random material
+  // Create a new box
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  geometry.translate(0, 0.5, 0);
+
+  // A function to create a new shader material with
+  // a random color & gradient
   const createMaterial = () => {
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        time: { value: 0 },
         power: { value: Random.range(1, 10) },
         color: { value: new THREE.Color(Random.pick(risoColors)) },
         background: { value: new THREE.Color(background) }
       },
+      // Pass coordinate down to fragment shader
       vertexShader: `
         varying vec2 vUv;
         void main () {
@@ -53,6 +59,7 @@ const sketch = (props) => {
           gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.0);
         }
       `,
+      // Receive coordinate and create a gradient
       fragmentShader: `
         varying vec2 vUv;
         uniform vec3 color;
@@ -68,6 +75,8 @@ const sketch = (props) => {
       `
     });
 
+    // Use a mutli-face material for the 6 sided cube
+    // Top and bottom sides will draw the background color
     const emptyMaterial = new THREE.MeshBasicMaterial({
       color: background
     });
@@ -82,14 +91,17 @@ const sketch = (props) => {
     ];
   };
 
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  geometry.translate(0, 0.5, 0);
-
+  // Animates a mesh by setting its Y scale to very small
+  // then animating it to an ideal size, and then back to small
   const animate = async (mesh) => {
     const targetScale = mesh.scale.y;
+
+    // Set initial size
+    // Need to use non-zero to avoid ThreeJS console warnings
     const minScale = 0.0001;
     mesh.scale.y = minScale;
 
+    // animate to an initial value
     await anime({
       targets: mesh.scale,
       y: targetScale,
@@ -97,50 +109,62 @@ const sketch = (props) => {
       easing: 'easeOutExpo'
     }).finished;
 
+    // animate back to almost zero
     await anime({
       targets: mesh.scale,
-      y: 0.0001,
+      y: minScale,
       duration: 1000,
       easing: 'easeInExpo'
     }).finished;
 
+    // IMPORTANT! We need to remove the mesh
+    // from the scene otherwise the app will eventually
+    // start to slow down and run out of memory
     scene.remove(mesh);
   };
 
+  // Create a random mesh at the given position
   const createMesh = (position) => {
     const mesh = new THREE.Mesh(geometry, createMaterial(1000));
 
-    mesh.position.set(position.x, 0, position.z);
+    // copy the position
+    mesh.position.copy(position);
+
+    // scale it randomly
     mesh.scale.set(
-      Random.gaussian() * Random.gaussian(),
       Math.abs(Random.gaussian() * Random.gaussian()),
-      Random.gaussian() * Random.gaussian()
+      Math.abs(Random.gaussian() * Random.gaussian()),
+      Math.abs(Random.gaussian() * Random.gaussian())
     );
 
     scene.add(mesh);
-    animate(mesh);
     return mesh;
   };
 
   const raycaster = new THREE.Raycaster();
   const ground = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 
-  // Create meshes on movement
-  window.addEventListener('mousemove', ev => {
+  // Listen for pointer events on the body
+  // We can use simple-input-events for mobile + desktop
+  const input = createInputEvents({
+    target: props.canvas,
+    preventDefault: true
+  }).on('move', ({ position }) => {
     const mouse = new THREE.Vector2(
-      ev.clientX / window.innerWidth * 2 - 1,
-      -ev.clientY / window.innerHeight * 2 + 1
+      position[0] / props.styleWidth * 2 - 1,
+      -position[1] / props.styleHeight * 2 + 1
     );
     raycaster.setFromCamera(mouse, camera);
     const target = new THREE.Vector3();
     const hit = raycaster.ray.intersectPlane(ground, target);
     if (hit) {
       // If we hit the ground, create a new mesh
-      createMesh(target);
+      const mesh = createMesh(target);
+      animate(mesh);
     }
   });
 
-  // Randomize colors
+  // Randomize colors on click
   window.addEventListener('click', ev => {
     // Get a new background color
     background = Random.pick(paperColors);
@@ -191,6 +215,7 @@ const sketch = (props) => {
     },
     // Dispose of events & renderer for cleaner hot-reloading
     unload () {
+      input.disable();
       renderer.dispose();
     }
   };

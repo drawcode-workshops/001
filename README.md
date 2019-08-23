@@ -107,6 +107,7 @@ Below are some of the modules used in the workshop:
 - [paper-colors](https://www.npmjs.com/package/paper-colors) - paper color palettes
 - [three-tube-wireframe](https://www.npmjs.com/package/three-tube-wireframe) - build volumetric wireframes from a THREE.Geometry
 - [anime.js](https://www.npmjs.com/package/animejs) - animation library
+- [simple-input-events](https://www.npmjs.com/package/simple-input-events) - utility for mobile & desktop touch/mouse events
 - [three-geometry-data](https://www.npmjs.com/package/three-geometry-data) - get nested vertex & normal data from a THREE.Geometry
 - [three-quaternion-from-normal](https://www.npmjs.com/package/three-quaternion-from-normal) - to orient a mesh toward a normal vector
 
@@ -180,4 +181,4 @@ This repository has a dual license.
 
 The textual documentation and markdown files are all licensed as MIT.
 
-The JavaScript source files have been released under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) (CC BY-NC-SA 4.0), see [src/LICENSE.md](./src/LICENSE.md) for details.
+The images and JavaScript source files have been released under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) (CC BY-NC-SA 4.0), see [src/LICENSE.md](./src/LICENSE.md) for details.

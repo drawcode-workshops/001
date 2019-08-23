@@ -48,12 +48,17 @@ Here's a small reference you can use to remember XYZ axes in ThreeJS.
 
 ## Raycast Mouse With Infinite Ground
 
+You can use the following to find the 3D position under the mouse by raycasting to a virtual 'ground plane' along the XZ plane.
+
 ```js
 const raycaster = new THREE.Raycaster();
 const ground = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 
-// Create meshes on movement
-window.addEventListener('mousemove', ev => {
+// Disbale 'touch-action' for better mobile support
+document.body.style.touchAction = 'none';
+
+// Listen for pointer events on the body
+document.body.addEventListener('pointermove', ev => {
   const mouse = new THREE.Vector2(
     ev.clientX / window.innerWidth * 2 - 1,
     -ev.clientY / window.innerHeight * 2 + 1
@@ -65,6 +70,44 @@ window.addEventListener('mousemove', ev => {
     console.log('Hit ground at', target);
   }
 });
+```
+
+## `simple-input-events` for unified mouse / touch
+
+If you want, you can use the `simple-input-events` utility to receive mouse and touch input like so:
+
+```js
+const createInputEvents = require('simple-input-events');
+
+const sketch = (props) => {
+  const input = createInputEvents({
+    // input events happen on canvas
+    target: props.canvas,
+    // block page swipe events on mobile
+    preventDefault: true
+  }).on('move', ({ position }) => {
+    // get a uv from 0..1
+    const u = position[0] / props.styleWidth;
+    const v = position[1] / props.styleHeight;
+
+    // get the X and Y in working units
+    // e.g. works in 'cm' or 'in' as well
+    const x = props.width * u;
+    const y = props.height * v;
+
+    // ... do something with position ...
+  });
+
+  return {
+    render () {
+      // ... draw your scene
+    },
+    unload () {
+      // disable mouse events
+      input.disable();
+    }
+  }
+};
 ```
 
 ## Noise from 2D Coordinates
