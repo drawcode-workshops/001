@@ -80,12 +80,15 @@ const sketch = (props) => {
     return material;
   };
 
-  const maxMeshes = 100;
+  const maxMeshes = 1000;
   for (let i = 0; i < maxMeshes; i++) {
     const mesh = new THREE.Mesh(geometry, createMaterial());
     const v = (i + 1) / maxMeshes;
     mesh.scale.setScalar(v);
     mesh.scale.multiplyScalar(Random.gaussian() * Random.gaussian() * 0.25);
+    // const k = Random.gaussian() * Random.gaussian() * 0.25;
+    // mesh.scale.z += k;
+    // mesh.scale.x += k;
     mesh.position.y += Random.gaussian() * Random.gaussian();
     scene.add(mesh);
   }
