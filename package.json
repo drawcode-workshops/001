@@ -9,6 +9,7 @@
     "url": "https://github.com/drawcode-workshops"
   },
   "dependencies": {
+    "animejs": "^3.1.0",
     "canvas-sketch": "^0.6.1",
     "canvas-sketch-util": "^1.8.0",
     "convex-hull": "^1.0.3",
@@ -23,9 +24,13 @@
     "unindex-mesh": "^2.0.0"
   },
   "devDependencies": {
-    "canvas-sketch-cli": "^1.10.1"
+    "canvas-sketch-cli": "^1.10.1",
+    "surge": "^0.21.3"
   },
-  "scripts": {},
+  "scripts": {
+    "build-demo": "canvas-sketch src/city/2-shader-interactive.js --build --dir=demo --inline --name=index",
+    "deploy-demo": "surge -p demo/ -d drawcode-001-demo.surge.sh"
+  },
   "keywords": [],
   "repository": {
     "type": "git",

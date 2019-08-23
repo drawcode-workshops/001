@@ -2,6 +2,11 @@
 
 This repository includes code & resources for students attending the *ThreeJS, WebGL & GLSL* workshops.
 
+###### ✨ [ [Interactive Demo](https://drawcode-001-demo.surge.sh/) ]
+
+
+[<img src="docs/images/demo1.png" width="33%" /><img src="docs/images/demo2.png" width="33%" /><img src="docs/images/demo6.png" width="33%" />](https://drawcode-001-demo.surge.sh/)
+
 # Contents
 
 - 📖 [Digital Book](#digital-book)
@@ -101,6 +106,7 @@ Below are some of the modules used in the workshop:
 - [riso-colors](https://www.npmjs.com/package/riso-colors) - Risograph color palettes
 - [paper-colors](https://www.npmjs.com/package/paper-colors) - paper color palettes
 - [three-tube-wireframe](https://www.npmjs.com/package/three-tube-wireframe) - build volumetric wireframes from a THREE.Geometry
+- [anime.js](https://www.npmjs.com/package/animejs) - animation library
 - [three-geometry-data](https://www.npmjs.com/package/three-geometry-data) - get nested vertex & normal data from a THREE.Geometry
 - [three-quaternion-from-normal](https://www.npmjs.com/package/three-quaternion-from-normal) - to orient a mesh toward a normal vector
 

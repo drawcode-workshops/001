@@ -46,6 +46,27 @@ Here's a small reference you can use to remember XYZ axes in ThreeJS.
 
 <img src="./images/xyz-1.png" width="33%" /> <img src="./images/xyz-2.png" width="33%" />
 
+## Raycast Mouse With Infinite Ground
+
+```js
+const raycaster = new THREE.Raycaster();
+const ground = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+
+// Create meshes on movement
+window.addEventListener('mousemove', ev => {
+  const mouse = new THREE.Vector2(
+    ev.clientX / window.innerWidth * 2 - 1,
+    -ev.clientY / window.innerHeight * 2 + 1
+  );
+  raycaster.setFromCamera(mouse, camera);
+  const target = new THREE.Vector3();
+  const hit = raycaster.ray.intersectPlane(ground, target);
+  if (hit) {
+    console.log('Hit ground at', target);
+  }
+});
+```
+
 ## Noise from 2D Coordinates
 
 If you have 2D coordinates between `N0..N1`, you can get back a *simplex noise* signal from those coordinates that smoothly varies between `-1...1`.
