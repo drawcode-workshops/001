@@ -83,14 +83,14 @@ const sketch = (props) => {
     return material;
   };
 
-  const maxMeshes = 20;
+  const maxMeshes = 50;
   for (let i = 0; i < maxMeshes; i++) {
     const material = createMaterial();//Array.from(new Array(6)).map(() => createMaterial());
     const mesh = new THREE.Mesh(geometry, material);
     let v = (i + 1) / maxMeshes;
-    v = Math.pow(v, 5);
+    v = Math.pow(v, 15);
     mesh.scale.setScalar(v);
-    // mesh.position.y = -v + 1;
+    mesh.position.y = -v + 1;
     scene.add(mesh);
   }
 
