@@ -28,7 +28,8 @@ const sketch = (props) => {
 
   // WebGL background color
   const background = Random.pick(paperColors);
-  const colors = Random.shuffle(risoColors);
+  const colors = [ 'white', 'black' ];// Random.shuffle(risoColors);
+  let colorIndex = 0;
 
   renderer.setClearColor(background, 1);
 
@@ -47,7 +48,7 @@ const sketch = (props) => {
   // A function to create a new shader material with
   // a random color & gradient
   const createMaterial = () => {
-    const color = Random.pick(colors);
+    const color = colors[colorIndex++ % colors.length];
 
     const material = new THREE.ShaderMaterial({
       side: THREE.DoubleSide,
@@ -89,7 +90,7 @@ const sketch = (props) => {
     let v = (i + 1) / maxMeshes;
     v = Math.pow(v, 5);
     mesh.scale.setScalar(v);
-    mesh.position.y = -v + 1;
+    // mesh.position.y = -v + 1;
     scene.add(mesh);
   }
 
