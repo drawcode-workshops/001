@@ -8,12 +8,10 @@ const canvasSketch = require('canvas-sketch');
 const Random = require('canvas-sketch-util/random');
 const risoColors = require('riso-colors').map(c => c.hex);
 const paperColors = require('paper-colors').map(c => c.hex);
-const niceColors = require('nice-color-palettes');
-const chromotome = require('chromotome').getAll().map(c => c.colors);
 
 const settings = {
   // Make the loop animated
-  animate: false,
+  animate: true,
   // Get a WebGL canvas rather than 2D
   context: 'webgl',
   dimensions: [ 2048, 2048 ],
@@ -29,10 +27,9 @@ const sketch = (props) => {
   });
 
   // WebGL background color
-  const palette = Random.pick(chromotome);
-  // const background = palette.shift();
-
   const background = Random.pick(paperColors);
+  const colors = Random.shuffle(risoColors);
+
   renderer.setClearColor(background, 1);
 
   // Setup a camera
@@ -50,7 +47,7 @@ const sketch = (props) => {
   // A function to create a new shader material with
   // a random color & gradient
   const createMaterial = () => {
-    const color = Random.pick(palette);
+    const color = Random.pick(colors);
 
     const material = new THREE.ShaderMaterial({
       side: THREE.DoubleSide,
@@ -85,16 +82,14 @@ const sketch = (props) => {
     return material;
   };
 
-  const maxMeshes = 1000;
+  const maxMeshes = 20;
   for (let i = 0; i < maxMeshes; i++) {
-    const mesh = new THREE.Mesh(geometry, createMaterial());
-    const v = (i + 1) / maxMeshes;
+    const material = createMaterial();//Array.from(new Array(6)).map(() => createMaterial());
+    const mesh = new THREE.Mesh(geometry, material);
+    let v = (i + 1) / maxMeshes;
+    v = Math.pow(v, 5);
     mesh.scale.setScalar(v);
-    mesh.scale.multiplyScalar(Random.gaussian() * Random.gaussian() * 0.25);
-    // const k = Random.gaussian() * Random.gaussian() * 0.25;
-    // mesh.scale.z += k;
-    // mesh.scale.x += k;
-    mesh.position.y += Random.gaussian() * Random.gaussian();
+    mesh.position.y = -v + 1;
     scene.add(mesh);
   }
 
