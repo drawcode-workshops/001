@@ -114,6 +114,7 @@ Here's a list of some other modules you might like to use in generative art:
 
 - [load-asset](https://www.npmjs.com/package/load-asset) - a utility to load images and other assets with async/await
 - [nice-color-palettes](https://www.npmjs.com/package/nice-color-palettes) - a collection of 1000 beautiful color palettes
+- [chromotome](https://www.npmjs.com/package/chromotome) - dozens of hand-picked color palettes
 - [poisson-disk-sampling](https://www.npmjs.com/package/poisson-disk-sampling) - can be used for 2D and 3D object placements
 - [convex-hull](https://www.npmjs.com/package/convex-hull) - 2D and 3D convex hull generation
 - [delaunay-triangulate](https://www.npmjs.com/package/delaunay-triangulate) - 2D and 3D triangulation

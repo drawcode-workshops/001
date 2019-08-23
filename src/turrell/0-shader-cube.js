@@ -8,6 +8,8 @@ const canvasSketch = require('canvas-sketch');
 const Random = require('canvas-sketch-util/random');
 const risoColors = require('riso-colors').map(c => c.hex);
 const paperColors = require('paper-colors').map(c => c.hex);
+const niceColors = require('nice-color-palettes');
+const chromotome = require('chromotome').getAll().map(c => c.colors);
 
 const settings = {
   // Make the loop animated
@@ -27,6 +29,9 @@ const sketch = (props) => {
   });
 
   // WebGL background color
+  const palette = Random.pick(chromotome);
+  // const background = palette.shift();
+
   const background = Random.pick(paperColors);
   renderer.setClearColor(background, 1);
 
@@ -45,7 +50,7 @@ const sketch = (props) => {
   // A function to create a new shader material with
   // a random color & gradient
   const createMaterial = () => {
-    const color = Random.pick(risoColors);
+    const color = Random.pick(palette);
 
     const material = new THREE.ShaderMaterial({
       side: THREE.DoubleSide,
