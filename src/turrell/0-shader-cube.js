@@ -28,7 +28,7 @@ const sketch = (props) => {
 
   // WebGL background color
   const background = Random.pick(paperColors);
-  const colors = [ 'white', 'black' ];// Random.shuffle(risoColors);
+  const colors = Random.shuffle(risoColors);
   let colorIndex = 0;
 
   renderer.setClearColor(background, 1);
@@ -85,12 +85,11 @@ const sketch = (props) => {
 
   const maxMeshes = 50;
   for (let i = 0; i < maxMeshes; i++) {
-    const material = createMaterial();//Array.from(new Array(6)).map(() => createMaterial());
+    const material = createMaterial();
     const mesh = new THREE.Mesh(geometry, material);
     let v = (i + 1) / maxMeshes;
     v = Math.pow(v, 15);
     mesh.scale.setScalar(v);
-    mesh.position.y = -v + 1;
     scene.add(mesh);
   }
 
