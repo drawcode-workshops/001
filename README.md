@@ -175,6 +175,12 @@ More links to generative art & creative coding:
 
   - [#plottertwitter](https://twitter.com/hashtag/plottertwitter?lang=en), [#generative](https://twitter.com/hashtag/generative?lang=en), [#webgl](https://twitter.com/hashtag/webgl?lang=en) and similar hashtags on Twitter, Instagram etc.
 
+- Riso Printers in Toronto
+
+  - [Vide Press](https://videpress.ca/)
+
+  - [Colour Code Printing](http://colourcodeprinting.com/)
+
 # License
 
 This repository has a dual license.
