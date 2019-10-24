@@ -55,12 +55,6 @@ npm --version
 node --version
 ```
 
-### Complete Installation Guide
-
-If you haven't installed these yet, you can find more instructions here:
-
-- [Installation Guide](./docs/installation.md)
-
 ## Installing `canvas-sketch` CLI
 
 We will be using [`canvas-sketch`](https://github.com/mattdesl/canvas-sketch/) and its command-line interface (CLI) during the workshop.
