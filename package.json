@@ -20,7 +20,7 @@
     "paper-colors": "^1.0.0",
     "riso-colors": "^1.0.1",
     "simple-input-events": "^1.0.0",
-    "three": "^0.107.0",
+    "three": "^0.137.0",
     "three-geometry-data": "^1.0.1",
     "three-quaternion-from-normal": "^1.0.0",
     "three-tube-wireframe": "^1.2.0",
